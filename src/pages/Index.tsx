@@ -30,7 +30,8 @@ const Index = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex items-center justify-center relative overflow-hidden">
+    <>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex items-center justify-center relative overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(0,0,0,0.02)_1px,transparent_1px)] bg-[length:32px_32px]" />
       
       <div className="relative z-10 text-center animate-fade-in">
@@ -126,9 +127,9 @@ const Index = () => {
           <div className="w-4 h-px bg-black" />
         </div>
       </div>
-    </div>
+      </div>
 
-    {showHomeSection && (
+      {showHomeSection && (
       <div 
         ref={homeSectionRef}
         className="min-h-screen bg-white flex items-center justify-center py-20 animate-fade-in"
@@ -179,7 +180,8 @@ const Index = () => {
           </div>
         </div>
       </div>
-    )}
+      )}
+    </>
   );
 };
 
