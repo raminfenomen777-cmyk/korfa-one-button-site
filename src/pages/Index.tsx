@@ -4,9 +4,11 @@ import { useState } from "react";
 const Index = () => {
   const [isHovered, setIsHovered] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleClick = () => {
     setIsClicked(true);
+    setIsMenuOpen(!isMenuOpen);
     setTimeout(() => setIsClicked(false), 300);
   };
 
@@ -46,6 +48,41 @@ const Index = () => {
             <div className="w-2 h-2 bg-black rounded-full animate-pulse" style={{ animationDelay: '0s' }} />
             <div className="w-2 h-2 bg-black rounded-full animate-pulse" style={{ animationDelay: '0.5s' }} />
             <div className="w-2 h-2 bg-black rounded-full animate-pulse" style={{ animationDelay: '1s' }} />
+          </div>
+          
+          <div className={`
+            mt-8 space-y-4 transition-all duration-500 ease-out
+            ${isMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8 pointer-events-none'}
+          `}>
+            <Button
+              variant="outline"
+              size="lg"
+              className="
+                px-8 py-4 text-base font-light
+                bg-white text-black border-black
+                hover:bg-black hover:text-white
+                transition-all duration-300 ease-out
+                hover:scale-105 hover:shadow-lg
+                mx-2
+              "
+            >
+              ДОМА
+            </Button>
+            
+            <Button
+              variant="outline"
+              size="lg"
+              className="
+                px-8 py-4 text-base font-light
+                bg-white text-black border-black
+                hover:bg-black hover:text-white
+                transition-all duration-300 ease-out
+                hover:scale-105 hover:shadow-lg
+                mx-2
+              "
+            >
+              ДОКУМЕНТЫ
+            </Button>
           </div>
         </div>
         
