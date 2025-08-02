@@ -1,11 +1,73 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
 
 const Index = () => {
+  const [isHovered, setIsHovered] = useState(false);
+  const [isClicked, setIsClicked] = useState(false);
+
+  const handleClick = () => {
+    setIsClicked(true);
+    setTimeout(() => setIsClicked(false), 300);
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4 color-black text-black">Добро пожаловать!</h1>
-        <p className="text-xl text-gray-600">тут будет отображаться ваш проект</p>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex items-center justify-center relative overflow-hidden">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(0,0,0,0.02)_1px,transparent_1px)] bg-[length:32px_32px]" />
+      
+      <div className="relative z-10 text-center animate-fade-in">
+        <div className="mb-12">
+          <h1 className="text-6xl md:text-8xl font-light tracking-tight text-black mb-4 transition-all duration-500">
+            КОРФА
+          </h1>
+          <div className="w-24 h-px bg-black mx-auto opacity-30" />
+        </div>
+        
+        <div className="space-y-8">
+          <Button
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            onClick={handleClick}
+            size="lg"
+            className={`
+              px-12 py-6 text-lg font-medium
+              bg-black text-white border border-black
+              transition-all duration-300 ease-out
+              hover:bg-white hover:text-black
+              hover:shadow-2xl hover:scale-105
+              active:scale-95
+              ${isHovered ? 'shadow-xl' : 'shadow-lg'}
+              ${isClicked ? 'ring-4 ring-black/20' : ''}
+            `}
+          >
+            КОРФА
+          </Button>
+          
+          <div className="flex justify-center space-x-6 opacity-40">
+            <div className="w-2 h-2 bg-black rounded-full animate-pulse" style={{ animationDelay: '0s' }} />
+            <div className="w-2 h-2 bg-black rounded-full animate-pulse" style={{ animationDelay: '0.5s' }} />
+            <div className="w-2 h-2 bg-black rounded-full animate-pulse" style={{ animationDelay: '1s' }} />
+          </div>
+        </div>
+        
+        <div className="mt-16 opacity-60">
+          <div className="w-px h-12 bg-black mx-auto mb-4" />
+          <p className="text-sm font-light tracking-widest uppercase">
+            Минимализм в действии
+          </p>
+        </div>
+      </div>
+      
+      <div className="absolute bottom-8 left-8 opacity-30">
+        <div className="w-12 h-12 border border-black rounded-full flex items-center justify-center">
+          <div className="w-2 h-2 bg-black rounded-full" />
+        </div>
+      </div>
+      
+      <div className="absolute top-8 right-8 opacity-30">
+        <div className="flex space-x-2">
+          <div className="w-8 h-px bg-black" />
+          <div className="w-4 h-px bg-black" />
+        </div>
       </div>
     </div>
   );
