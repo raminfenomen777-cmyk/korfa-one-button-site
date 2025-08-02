@@ -6,7 +6,10 @@ const Index = () => {
   const [isClicked, setIsClicked] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showHomeSection, setShowHomeSection] = useState(false);
+  const [showStreetNumbers, setShowStreetNumbers] = useState(false);
+  const [selectedStreet, setSelectedStreet] = useState("");
   const homeSectionRef = useRef<HTMLDivElement>(null);
+  const streetNumbersRef = useRef<HTMLDivElement>(null);
 
   const handleClick = () => {
     setIsClicked(true);
@@ -24,7 +27,19 @@ const Index = () => {
     }, 200);
   };
 
+  const handleStreetClick = (street: string) => {
+    setSelectedStreet(street);
+    setShowStreetNumbers(true);
+    setTimeout(() => {
+      streetNumbersRef.current?.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }, 200);
+  };
+
   const homeButtons = Array.from({ length: 42 }, (_, i) => (i + 1).toString());
+  const streets = ["Таежное", "Геологов", "Арсеньева", "Ленина", "Советская", "Лазо"];
 
   return (
     <>
@@ -126,7 +141,7 @@ const Index = () => {
       </div>
       </div>
 
-      {showHomeSection && (
+      {showHomeSection && !showStreetNumbers && (
       <div 
         ref={homeSectionRef}
         className="min-h-screen bg-white flex items-center justify-center py-20 animate-fade-in"
@@ -139,6 +154,60 @@ const Index = () => {
             <div className="w-16 h-px bg-black mx-auto opacity-50" />
             <p className="text-lg font-light text-gray-600 mt-6 tracking-wide">
               Выберите улицу
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-3xl mx-auto">
+            {streets.map((street, index) => (
+              <Button
+                key={street}
+                variant="outline"
+                size="lg"
+                onClick={() => handleStreetClick(street)}
+                className={`
+                  px-8 py-6 text-lg font-light
+                  bg-white text-black border border-gray-300
+                  hover:border-black hover:bg-black hover:text-white
+                  transition-all duration-300 ease-out
+                  hover:scale-105 hover:shadow-md
+                  animate-fade-in
+                `}
+                style={{ 
+                  animationDelay: `${index * 0.1}s`,
+                  animationFillMode: 'both'
+                }}
+              >
+                {street}
+              </Button>
+            ))}
+          </div>
+          
+          <div className="text-center mt-16">
+            <Button
+              variant="ghost"
+              onClick={() => setShowHomeSection(false)}
+              className="text-gray-400 hover:text-black transition-colors duration-300"
+            >
+              ← Назад
+            </Button>
+          </div>
+        </div>
+      </div>
+      )}
+
+      {showStreetNumbers && (
+      <div 
+        ref={streetNumbersRef}
+        className="min-h-screen bg-white flex items-center justify-center py-20 animate-fade-in"
+      >
+        <div className="max-w-4xl mx-auto px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-5xl font-light tracking-tight text-black mb-6">
+              {selectedStreet}
+            </h2>
+            <div className="w-16 h-px bg-black mx-auto opacity-50" />
+            <p className="text-lg font-light text-gray-600 mt-6 tracking-wide">
+              Выберите дом
             </p>
           </div>
           
@@ -170,7 +239,7 @@ const Index = () => {
           <div className="text-center mt-16">
             <Button
               variant="ghost"
-              onClick={() => setShowHomeSection(false)}
+              onClick={() => setShowStreetNumbers(false)}
               className="text-gray-400 hover:text-black transition-colors duration-300"
             >
               ← Назад
