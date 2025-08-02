@@ -10,6 +10,9 @@ const Index = () => {
   const [selectedStreet, setSelectedStreet] = useState("");
   const [showHouseModal, setShowHouseModal] = useState(false);
   const [selectedHouse, setSelectedHouse] = useState("");
+  const [showNotesModal, setShowNotesModal] = useState(false);
+  const [notesType, setNotesType] = useState("");
+  const [notes, setNotes] = useState<{[key: string]: string}>({});
   const homeSectionRef = useRef<HTMLDivElement>(null);
   const streetNumbersRef = useRef<HTMLDivElement>(null);
 
@@ -42,6 +45,25 @@ const Index = () => {
 
   const handleHouseClick = (house: string) => {
     setSelectedHouse(house);
+    setShowHouseModal(true);
+  };
+
+  const handleNotesClick = (type: string) => {
+    setNotesType(type);
+    setShowNotesModal(true);
+    setShowHouseModal(false);
+  };
+
+  const getNotesKey = () => {
+    return `${selectedStreet}-${selectedHouse}-${notesType}`;
+  };
+
+  const handleSaveNotes = (noteText: string) => {
+    setNotes(prev => ({
+      ...prev,
+      [getNotesKey()]: noteText
+    }));
+    setShowNotesModal(false);
     setShowHouseModal(true);
   };
 
@@ -289,6 +311,7 @@ const Index = () => {
               <Button
                 variant="outline"
                 size="lg"
+                onClick={() => handleNotesClick("card")}
                 className="w-full py-4 text-lg font-light bg-white text-black border border-gray-300 hover:border-black hover:bg-black hover:text-white transition-all duration-300"
               >
                 Карточка дома
@@ -297,6 +320,7 @@ const Index = () => {
               <Button
                 variant="outline"
                 size="lg"
+                onClick={() => handleNotesClick("2025")}
                 className="w-full py-4 text-lg font-light bg-white text-black border border-gray-300 hover:border-black hover:bg-black hover:text-white transition-all duration-300"
               >
                 Работы на этот год (2025)
@@ -305,6 +329,7 @@ const Index = () => {
               <Button
                 variant="outline"
                 size="lg"
+                onClick={() => handleNotesClick("2026")}
                 className="w-full py-4 text-lg font-light bg-white text-black border border-gray-300 hover:border-black hover:bg-black hover:text-white transition-all duration-300"
               >
                 Работы на след. год (2026)
@@ -318,6 +343,56 @@ const Index = () => {
                 className="text-gray-400 hover:text-black transition-colors duration-300"
               >
                 Закрыть
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showNotesModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 animate-fade-in">
+          <div className="bg-white rounded-lg p-8 max-w-2xl w-full mx-4 animate-fade-in">
+            <div className="text-center mb-8">
+              <h3 className="text-2xl font-light text-black mb-2">
+                {selectedStreet}, {selectedHouse}
+              </h3>
+              <p className="text-lg text-gray-600">
+                {notesType === "card" ? "Карточка дома" : 
+                 notesType === "2025" ? "Работы на этот год (2025)" : 
+                 "Работы на след. год (2026)"}
+              </p>
+              <div className="w-12 h-px bg-black mx-auto opacity-50 mt-4" />
+            </div>
+            
+            <div className="mb-6">
+              <textarea
+                value={notes[getNotesKey()] || ""}
+                onChange={(e) => setNotes(prev => ({
+                  ...prev,
+                  [getNotesKey()]: e.target.value
+                }))}
+                placeholder="Введите заметки..."
+                className="w-full h-64 p-4 border border-gray-300 rounded-lg resize-none focus:border-black focus:outline-none transition-colors duration-300"
+              />
+            </div>
+            
+            <div className="flex justify-center space-x-4">
+              <Button
+                variant="outline"
+                onClick={() => handleSaveNotes(notes[getNotesKey()] || "")}
+                className="px-8 py-2 text-black border-black hover:bg-black hover:text-white transition-all duration-300"
+              >
+                Сохранить
+              </Button>
+              <Button
+                variant="ghost"
+                onClick={() => {
+                  setShowNotesModal(false);
+                  setShowHouseModal(true);
+                }}
+                className="px-8 py-2 text-gray-400 hover:text-black transition-colors duration-300"
+              >
+                Отмена
               </Button>
             </div>
           </div>
