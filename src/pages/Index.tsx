@@ -138,7 +138,7 @@ const Index = () => {
             </h2>
             <div className="w-16 h-px bg-black mx-auto opacity-50" />
             <p className="text-lg font-light text-gray-600 mt-6 tracking-wide">
-              Выберите помещение
+              Выберите улицу
             </p>
           </div>
           
