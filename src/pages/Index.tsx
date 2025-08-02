@@ -24,10 +24,7 @@ const Index = () => {
     }, 200);
   };
 
-  const homeButtons = [
-    "Спальня", "Кухня", "Гостиная", "Ванная", "Коридор",
-    "Балкон", "Кладовка", "Детская", "Кабинет", "Прихожая"
-  ];
+  const homeButtons = Array.from({ length: 42 }, (_, i) => (i + 1).toString());
 
   return (
     <>
@@ -145,26 +142,27 @@ const Index = () => {
             </p>
           </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 max-w-3xl mx-auto">
-            {homeButtons.map((room, index) => (
+          <div className="grid grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-3 max-w-5xl mx-auto">
+            {homeButtons.map((number, index) => (
               <Button
-                key={room}
+                key={number}
                 variant="outline"
                 size="sm"
                 className={`
-                  px-4 py-6 text-sm font-light
+                  px-3 py-4 text-sm font-medium
                   bg-white text-black border border-gray-300
                   hover:border-black hover:bg-black hover:text-white
                   transition-all duration-300 ease-out
-                  hover:scale-105 hover:shadow-md
+                  hover:scale-110 hover:shadow-md
                   animate-fade-in
+                  aspect-square flex items-center justify-center
                 `}
                 style={{ 
-                  animationDelay: `${index * 0.1}s`,
+                  animationDelay: `${index * 0.02}s`,
                   animationFillMode: 'both'
                 }}
               >
-                {room}
+                {number}
               </Button>
             ))}
           </div>
