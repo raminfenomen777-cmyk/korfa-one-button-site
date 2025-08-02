@@ -38,8 +38,26 @@ const Index = () => {
     }, 200);
   };
 
-  const homeButtons = Array.from({ length: 42 }, (_, i) => (i + 1).toString());
   const streets = ["Таежное", "Геологов", "Арсеньева", "Ленина", "Советская", "Лазо"];
+  
+  const getHousesForStreet = (street: string) => {
+    switch (street) {
+      case "Таежное":
+        return ["1", "2", "4", "6", "8", "10", "12", "14", "16", "21", "23"];
+      case "Геологов":
+        return Array.from({ length: 16 }, (_, i) => (i + 1).toString());
+      case "Арсеньева":
+        return ["12", "14", "16", "18", "20", "22", "24"];
+      case "Ленина":
+        return ["3", "8", "9", "10"];
+      case "Лазо":
+        return ["12", "14"];
+      case "Советская":
+        return ["1а", "1б"];
+      default:
+        return [];
+    }
+  };
 
   return (
     <>
@@ -212,7 +230,7 @@ const Index = () => {
           </div>
           
           <div className="grid grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-3 max-w-5xl mx-auto">
-            {homeButtons.map((number, index) => (
+            {getHousesForStreet(selectedStreet).map((number, index) => (
               <Button
                 key={number}
                 variant="outline"
