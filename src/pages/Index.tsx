@@ -8,6 +8,8 @@ const Index = () => {
   const [showHomeSection, setShowHomeSection] = useState(false);
   const [showStreetNumbers, setShowStreetNumbers] = useState(false);
   const [selectedStreet, setSelectedStreet] = useState("");
+  const [showHouseModal, setShowHouseModal] = useState(false);
+  const [selectedHouse, setSelectedHouse] = useState("");
   const homeSectionRef = useRef<HTMLDivElement>(null);
   const streetNumbersRef = useRef<HTMLDivElement>(null);
 
@@ -36,6 +38,11 @@ const Index = () => {
         block: 'start'
       });
     }, 200);
+  };
+
+  const handleHouseClick = (house: string) => {
+    setSelectedHouse(house);
+    setShowHouseModal(true);
   };
 
   const streets = ["Таежное", "Геологов", "Арсеньева", "Ленина", "Советская", "Лазо"];
@@ -235,6 +242,7 @@ const Index = () => {
                 key={number}
                 variant="outline"
                 size="sm"
+                onClick={() => handleHouseClick(number)}
                 className={`
                   px-3 py-4 text-sm font-medium
                   bg-white text-black border border-gray-300
@@ -265,6 +273,55 @@ const Index = () => {
           </div>
         </div>
       </div>
+      )}
+
+      {showHouseModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 animate-fade-in">
+          <div className="bg-white rounded-lg p-8 max-w-md w-full mx-4 animate-fade-in">
+            <div className="text-center mb-8">
+              <h3 className="text-2xl font-light text-black mb-2">
+                {selectedStreet}, {selectedHouse}
+              </h3>
+              <div className="w-12 h-px bg-black mx-auto opacity-50" />
+            </div>
+            
+            <div className="space-y-4">
+              <Button
+                variant="outline"
+                size="lg"
+                className="w-full py-4 text-lg font-light bg-white text-black border border-gray-300 hover:border-black hover:bg-black hover:text-white transition-all duration-300"
+              >
+                Карточка дома
+              </Button>
+              
+              <Button
+                variant="outline"
+                size="lg"
+                className="w-full py-4 text-lg font-light bg-white text-black border border-gray-300 hover:border-black hover:bg-black hover:text-white transition-all duration-300"
+              >
+                Работы на этот год (2025)
+              </Button>
+              
+              <Button
+                variant="outline"
+                size="lg"
+                className="w-full py-4 text-lg font-light bg-white text-black border border-gray-300 hover:border-black hover:bg-black hover:text-white transition-all duration-300"
+              >
+                Работы на след. год (2026)
+              </Button>
+            </div>
+            
+            <div className="text-center mt-8">
+              <Button
+                variant="ghost"
+                onClick={() => setShowHouseModal(false)}
+                className="text-gray-400 hover:text-black transition-colors duration-300"
+              >
+                Закрыть
+              </Button>
+            </div>
+          </div>
+        </div>
       )}
     </>
   );
