@@ -93,10 +93,6 @@ const Index = () => {
   };
 
   const handleNotesClick = (type: string) => {
-    if (!isAdmin) {
-      setShowAuthModal(true);
-      return;
-    }
     setNotesType(type);
     setShowNotesModal(true);
     setShowHouseModal(false);
