@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 const Index = () => {
   const [isHovered, setIsHovered] = useState(false);
@@ -13,6 +13,19 @@ const Index = () => {
   const [showNotesModal, setShowNotesModal] = useState(false);
   const [notesType, setNotesType] = useState("");
   const [notes, setNotes] = useState<{[key: string]: string}>({});
+
+  // Загрузка заметок из localStorage при запуске
+  useEffect(() => {
+    const savedNotes = localStorage.getItem('house-notes');
+    if (savedNotes) {
+      setNotes(JSON.parse(savedNotes));
+    }
+  }, []);
+
+  // Сохранение заметок в localStorage при изменении
+  useEffect(() => {
+    localStorage.setItem('house-notes', JSON.stringify(notes));
+  }, [notes]);
   const homeSectionRef = useRef<HTMLDivElement>(null);
   const streetNumbersRef = useRef<HTMLDivElement>(null);
 
@@ -59,10 +72,16 @@ const Index = () => {
   };
 
   const handleSaveNotes = (noteText: string) => {
-    setNotes(prev => ({
-      ...prev,
-      [getNotesKey()]: noteText
-    }));
+    const key = getNotesKey();
+    setNotes(prev => {
+      const updatedNotes = {
+        ...prev,
+        [key]: noteText
+      };
+      // Сохраняем в localStorage сразу
+      localStorage.setItem('house-notes', JSON.stringify(updatedNotes));
+      return updatedNotes;
+    });
     setShowNotesModal(false);
     setShowHouseModal(true);
   };
