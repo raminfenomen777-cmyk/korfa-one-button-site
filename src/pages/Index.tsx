@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useState, useRef, useEffect } from "react";
+import AuthModal from "@/components/AuthModal";
 
 const Index = () => {
   const [isHovered, setIsHovered] = useState(false);
@@ -13,12 +14,20 @@ const Index = () => {
   const [showNotesModal, setShowNotesModal] = useState(false);
   const [notesType, setNotesType] = useState("");
   const [notes, setNotes] = useState<{[key: string]: string}>({});
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  
+  const ADMIN_PASSWORD = "admin123"; // В реальном проекте это должно быть зашифровано
 
-  // Загрузка заметок из localStorage при запуске
+  // Загрузка заметок и статуса авторизации из localStorage при запуске
   useEffect(() => {
     const savedNotes = localStorage.getItem('house-notes');
     if (savedNotes) {
       setNotes(JSON.parse(savedNotes));
+    }
+    const savedAdminStatus = localStorage.getItem('is-admin');
+    if (savedAdminStatus === 'true') {
+      setIsAdmin(true);
     }
   }, []);
 
@@ -61,17 +70,41 @@ const Index = () => {
     setShowHouseModal(true);
   };
 
-  const handleNotesClick = (type: string) => {
-    setNotesType(type);
-    setShowNotesModal(true);
-    setShowHouseModal(false);
-  };
+
 
   const getNotesKey = () => {
     return `${selectedStreet}-${selectedHouse}-${notesType}`;
   };
 
+  const handleLogin = (password: string) => {
+    if (password === ADMIN_PASSWORD) {
+      setIsAdmin(true);
+      localStorage.setItem('is-admin', 'true');
+      setShowAuthModal(false);
+    } else {
+      // Неправильный пароль - показываем ошибку
+      return false;
+    }
+  };
+
+  const handleLogout = () => {
+    setIsAdmin(false);
+    localStorage.removeItem('is-admin');
+  };
+
+  const handleNotesClick = (type: string) => {
+    if (!isAdmin) {
+      setShowAuthModal(true);
+      return;
+    }
+    setNotesType(type);
+    setShowNotesModal(true);
+    setShowHouseModal(false);
+  };
+
   const handleSaveNotes = (noteText: string) => {
+    if (!isAdmin) return;
+    
     const key = getNotesKey();
     setNotes(prev => {
       const updatedNotes = {
@@ -113,11 +146,33 @@ const Index = () => {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(0,0,0,0.02)_1px,transparent_1px)] bg-[length:32px_32px]" />
       
       <div className="relative z-10 text-center animate-fade-in">
-        <div className="mb-12">
+        <div className="mb-12 relative">
+          <div className="absolute top-0 right-0">
+            {isAdmin ? (
+              <Button
+                variant="ghost"
+                onClick={handleLogout}
+                className="text-sm text-gray-500 hover:text-black transition-colors duration-300"
+              >
+                Выйти
+              </Button>
+            ) : (
+              <Button
+                variant="ghost"
+                onClick={() => setShowAuthModal(true)}
+                className="text-sm text-gray-500 hover:text-black transition-colors duration-300"
+              >
+                Вход
+              </Button>
+            )}
+          </div>
           <h1 className="text-6xl md:text-8xl font-light tracking-tight text-black mb-4 transition-all duration-500">
             КОРФА
           </h1>
           <div className="w-24 h-px bg-black mx-auto opacity-30" />
+          {isAdmin && (
+            <p className="text-sm text-green-600 mt-2">Администратор</p>
+          )}
         </div>
         
         <div className="space-y-8">
@@ -384,25 +439,33 @@ const Index = () => {
             </div>
             
             <div className="mb-6">
-              <textarea
-                value={notes[getNotesKey()] || ""}
-                onChange={(e) => setNotes(prev => ({
-                  ...prev,
-                  [getNotesKey()]: e.target.value
-                }))}
-                placeholder="Введите заметки..."
-                className="w-full h-64 p-4 border border-gray-300 rounded-lg resize-none focus:border-black focus:outline-none transition-colors duration-300"
-              />
+              {isAdmin ? (
+                <textarea
+                  value={notes[getNotesKey()] || ""}
+                  onChange={(e) => setNotes(prev => ({
+                    ...prev,
+                    [getNotesKey()]: e.target.value
+                  }))}
+                  placeholder="Введите заметки..."
+                  className="w-full h-64 p-4 border border-gray-300 rounded-lg resize-none focus:border-black focus:outline-none transition-colors duration-300"
+                />
+              ) : (
+                <div className="w-full h-64 p-4 border border-gray-200 rounded-lg bg-gray-50 text-gray-600 overflow-y-auto">
+                  {notes[getNotesKey()] || "Нет заметок"}
+                </div>
+              )}
             </div>
             
             <div className="flex justify-center space-x-4">
-              <Button
-                variant="outline"
-                onClick={() => handleSaveNotes(notes[getNotesKey()] || "")}
-                className="px-8 py-2 text-black border-black hover:bg-black hover:text-white transition-all duration-300"
-              >
-                Сохранить
-              </Button>
+              {isAdmin && (
+                <Button
+                  variant="outline"
+                  onClick={() => handleSaveNotes(notes[getNotesKey()] || "")}
+                  className="px-8 py-2 text-black border-black hover:bg-black hover:text-white transition-all duration-300"
+                >
+                  Сохранить
+                </Button>
+              )}
               <Button
                 variant="ghost"
                 onClick={() => {
@@ -411,12 +474,18 @@ const Index = () => {
                 }}
                 className="px-8 py-2 text-gray-400 hover:text-black transition-colors duration-300"
               >
-                Отмена
+                {isAdmin ? "Отмена" : "Закрыть"}
               </Button>
             </div>
           </div>
         </div>
       )}
+
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        onLogin={handleLogin}
+      />
     </>
   );
 };
